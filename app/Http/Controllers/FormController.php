@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\GenerateSafeSubmitToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -9,17 +10,15 @@ use Illuminate\Support\Str;
 
 class FormController extends Controller
 {
+
     public function show()
     {
-        $submissionToken = Str::random(32);
-        session()->put('submissionToken', $submissionToken);
-
-        return view('form', compact('submissionToken'));
+        return view('form');
     }
 
     public function store(Request $request)
     {
-        if($request->submissionToken !== session()->get('submissionToken')) {
+        if ($request->submissionToken !== session()->get('submissionToken')) {
             abort(419);
         }
 
